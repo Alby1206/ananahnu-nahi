@@ -1,2 +1,449 @@
-# ananahnu-nahi
-USHUL FIKIH NAHI
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eksplorasi Kaidah Ushul Fiqh: NAHY</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chosen Palette: Warm Neutrals & Islamic Greens (stone-50, green-800, yellow-600, emerald-500) -->
+    <!-- Application Structure Plan: The SPA uses a dashboard-like structure. Given the conceptual nature of the text, a radial navigation menu (built with Chart.js Doughnut) is used to explore the 5 rules visually. The left column acts as the interactive index, while the right column displays the detailed content (Arabic text, meaning, explanation, and example) dynamically. This prevents long scrolling and makes the learning process engaging. -->
+    <!-- Visualization & Content Choices: The report contains 5 qualitative principles. Goal: Organize & Inform. Viz Method: Chart.js Doughnut Chart acting as an interactive structural map. Interaction: Clicking a slice updates the reading pane. Justification: Ushul Fiqh can be text-heavy; a visual map breaks down the cognitive load and invites exploration. Library: Chart.js (NO SVG/Mermaid). -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+                max-width: 100%;
+            }
+        }
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800 min-h-screen flex flex-col">
+
+    <nav class="bg-green-800 text-stone-50 p-4 shadow-md">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold tracking-wide">📚 Ensiklopedia Ushul Fiqh</h1>
+            <span class="text-sm bg-green-700 px-3 py-1 rounded-full">Topik: NAHY (Larangan)</span>
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-6xl mx-auto w-full p-4 sm:p-6 lg:p-8 flex flex-col gap-8">
+        
+        <section class="bg-white p-6 rounded-2xl shadow-sm border border-stone-200">
+            <h2 class="text-2xl sm:text-3xl font-bold text-green-800 mb-4">Yuk Ngobrolin Kaidah Ushul Fiqh: NAHY!</h2>
+            <p class="text-lg leading-relaxed text-stone-600">
+                Pernah kepikiran nggak sih gimana caranya ulama mutusin hukum sesuatu itu haram, batal, atau cuma sekadar makruh? Nah, kali ini kita mau bahas salah satu kuncinya, yaitu tentang <strong>NAHY</strong>, alias konsep larangan dalam ilmu Ushul Fiqh. Singkatnya, Nahy itu adalah bentuk permintaan buat ninggalin suatu perbuatan dari pihak yang posisinya lebih tinggi (Allah SWT dan Rasul-Nya) kepada pihak yang posisinya lebih rendah (kita).
+            </p>
+            <p class="mt-4 text-stone-600 bg-stone-100 p-4 rounded-lg border-l-4 border-yellow-500">
+                💡 <strong>Cara Menggunakan Interaksi:</strong> Silakan klik pada potongan diagram donat di bawah ini, atau gunakan tombol navigasi untuk mempelajari 5 kaidah dasar Nahy.
+            </p>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <section class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-stone-200 flex flex-col items-center">
+                <h3 class="text-xl font-bold text-stone-800 mb-2 text-center">Peta 5 Kaidah Nahy</h3>
+                <p class="text-sm text-stone-500 mb-6 text-center">Klik pada diagram untuk melihat detail kaidah.</p>
+                
+                <div class="chart-container">
+                    <canvas id="kaidahChart"></canvas>
+                </div>
+
+                <div class="mt-8 flex flex-wrap justify-center gap-2" id="button-container">
+                </div>
+                
+                <div class="mt-6 border-t border-stone-200 pt-6 w-full text-center">
+                    <button onclick="startQuiz()" class="bg-yellow-500 text-yellow-900 px-6 py-3 rounded-xl hover:bg-yellow-400 font-bold shadow-sm transition-all w-full flex justify-center items-center gap-2">
+                        <span>📝</span> Mulai Kuis Evaluasi
+                    </button>
+                </div>
+            </section>
+
+            <section class="lg:col-span-7 bg-white p-0 rounded-2xl shadow-sm border border-stone-200 overflow-hidden relative min-h-[500px]">
+                <div class="bg-green-800 p-4 text-stone-50">
+                    <h3 id="display-title" class="text-2xl font-bold">Pilih Kaidah pada Diagram</h3>
+                </div>
+                
+                <div id="display-content" class="p-6 sm:p-8 fade-in">
+                    <div class="text-center text-stone-400 py-20">
+                        <span class="text-6xl mb-4 block">👈</span>
+                        <p class="text-xl">Silakan pilih salah satu kaidah di sebelah kiri untuk mulai membaca.</p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="bg-stone-200 text-stone-600 text-center p-4 mt-8">
+        <p>Berdasarkan Catatan Ushul Fiqh - Konsep Nahy</p>
+    </footer>
+
+    <script>
+        const kaidahData = [
+            {
+                id: 1,
+                shortTitle: "Kaidah 1: Haram",
+                title: "Kaidah 1: Pada Dasarnya, Larangan Itu Artinya Haram!",
+                arabic: "الأَصْلُ فِي النَّهْيِ لِلتَّحْرِيمِ إِلَّا مَا دَلَّ الدَّلِيلُ عَلَى خِلَافِهِ",
+                translation: "Asal dalam larangan itu hukumnya haram kecuali terdapat dalil yang menjelaskan tentang perbedaannya",
+                penjelasan: "Tiap kali ada kalimat larangan dari Allah atau Rasul-Nya, hukum asalnya otomatis adalah haram! Status haram ini ibarat lampu merah mutlak, dan baru bisa berubah (misalnya jadi turun level ke makruh) kalau kebetulan ada petunjuk, konteks, atau dalil lain yang ngasih kelonggaran. Kenapa begitu? Karena syariat Islam itu pada dasarnya pengen ngelindungin kita dari bahaya dan kerusakan.",
+                contoh: "Firman Allah Swt:<br><br><span class='font-bold text-lg text-green-900'>وَلَا تُفْسِدُوا فِي الْأَرْضِ بَعْدَ إِصْلَاحِهَا</span><br><br>\"Dan janganlah kamu membuat kerusakan di muka bumi, sesudah (Allah) memperbaikinya.\" (QS. Al-A'raaf: 56)<br><br><span class='text-sm text-stone-500 italic'>(Larangan ini mutlak haram karena nggak ada dalil lain yang membolehkan kita merusak alam).</span>",
+                icon: "🛑"
+            },
+            {
+                id: 2,
+                shortTitle: "Kaidah 2: Kebalikan",
+                title: "Kaidah 2: Dilarang Sesuatu Berarti Disuruh Kebalikannya!",
+                arabic: "النَّهْيُ عَنِ الشَّيْئِ أَمْرٌ بِضِدِّهِ",
+                translation: "Melarang sesuatu berarti juga memerintah yang berlawana dengan sesuatu itu",
+                penjelasan: "Logikanya begini: kalau ada jalan yang ditutup, pasti ada jalan alternatif yang dibuka. Kalau agama melarang kita melakukan sesuatu yang buruk, itu otomatis berarti kita lagi disuruh buat ngelakuin hal kebalikannya yang baik. Jadi, Islam itu nggak cuma sekadar melarang, tapi juga ngasih solusi positifnya. Sederhana banget, kan!",
+                contoh: "Firman Allah Swt:<br><br><span class='font-bold text-lg text-green-900'>وَلَا تَأْكُلُوا أَمْوَالَكُم بَيْنَكُم بِالْبَاطِلِ</span><br><br>\"Dan janganlah sebahagian kamu memakan harta sebahagian yang lain di antara kamu dengan jalan yang bathil.\" (QS. Al-Baqarah: 188)<br><br><span class='text-sm text-stone-500 italic'>(Nah, karena dilarang keras memakan harta dengan cara batil seperti menipu atau mencuri, ini otomatis menjadi perintah tegas buat kita untuk mencari harta lewat jalan yang jujur dan halal!)</span>",
+                icon: "🔄"
+            },
+            {
+                id: 3,
+                shortTitle: "Kaidah 3: Batal Ibadah",
+                title: "Kaidah 3: Melanggar Larangan pas Ibadah, Bikin Ibadahnya Batal!",
+                arabic: "الْأَصْلُ فِي النَّهْيِ يَدُلُّ عَلَى فَسَادِ الْمَنْهِيِّ عَنْهُ فِي الْعِبَادَاتِ",
+                translation: "Asal dalam larangan itu menunjukkan pada kerusakan perkara yang dilarangnya dalam beribadah.",
+                penjelasan: "Ibadah itu ibarat ngirim proposal resmi ke atasan, ada SOP dan aturannya yang harus dipatuhi. Kalau ada suatu larangan yang nyambung erat sama syarat mutlak atau rukun ibadah, terus kita tetap nekat ngelakuinnya, ibadahnya langsung rusak alias batal!",
+                contoh: "<strong>Contoh Kasus:</strong> Orang yang lagi haidh kan secara syariat dilarang keras sholat dan berpuasa. Kalau dia tetap maksa ngerjain ibadah tersebut karena ngerasa \"sayang pahalanya\", ya jelas ibadahnya malah jadi tidak sah! Bahkan bisa jadi dosa karena seolah-olah dia nabrak dan nggak peduli sama aturan yang udah ditetapin.",
+                icon: "🕌"
+            },
+            {
+                id: 4,
+                shortTitle: "Kaidah 4: Batal Transaksi",
+                title: "Kaidah 4: Larangan pada Inti Transaksi, Bikin Akadnya Batal!",
+                arabic: "النَّهْيِ يَدُلُّ عَلَى فَسَادِ الْمَنْهِيِّ عَنْهُ فِي الْمُعَامَلاتِ إِنْ رَجَعَ النَّهْيُ إِلَى نَفْسِ الْعَقْدِ",
+                translation: "Larangan itu menunjukkan pada kerusakan perkara yang dilarangnya dalam bermu'amalah jika larangan itu merujuk pada dzatnya akad.",
+                penjelasan: "Buat urusan transaksi keuangan atau muamalah, kalau larangannya itu langsung kena ke rukun transaksinya, barang yang dijual, atau syarat utamanya, maka akadnya pasti batal dan nggak sah di mata agama. Artinya, secara hukum Islam, barang atau uang itu nggak berpindah kepemilikan.",
+                contoh: "<strong>Contoh Kasus:</strong> Larangan jual beli kerikil. Apa sih jual beli kerikil itu? Di zaman dulu, ini semacam transaksi untung-untungan yang sifatnya gharar (nggak jelas barang mana yang bakal didapat pembeli). Sebagaimana sabda Nabi Saw:<br><br><span class='font-bold text-lg text-green-900'>نَهَى صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ عَنْ بَيْعِ الْحَصَاةِ . رواه مسلم.</span><br><br>\"Nabi Saw telah melarang melakukan jual beli kerikil.\" (HR. Muslim)<br><br><span class='text-sm text-stone-500 italic'>(Karena unsur ketidakjelasan ini merusak inti dari keadilan dalam jual beli, maka transaksinya otomatis rusak/batal).</span>",
+                icon: "⚖️"
+            },
+            {
+                id: 5,
+                shortTitle: "Kaidah 5: Tidak Batal",
+                title: "Kaidah 5: Larangan di Luar Inti Transaksi, Tidak Bikin Batal!",
+                arabic: "وَإِنْ رَجَعَ إِلَى أَمْرٍ خَارِجِ عَنِ الْعَقْدِ غَيْرِ لَأَزِمٍ فَلَا",
+                translation: "Jika larangan itu merujuk pada perkara yang keluar dari bentuk akad yang tidak lazim maka tidaklah menjadi batal",
+                penjelasan: "Nah, ini beda ceritanya. Di sini kita belajar memisahkan antara \"barangnya\" dan \"timing-nya\". Kalau larangan itu cuma tertuju pada hal di luar inti transaksi (kayak waktu atau tempat), akadnya tetap sah kok! Barang yang dibeli halal jadi milik kita. Tapi ingat, pelakunya tetap panen dosa karena dia sudah melanggar kondisi larangan tersebut.",
+                contoh: "Firman Allah Swt:<br><br><span class='font-bold text-lg text-green-900'>إِذَا نُودِيَ لِلصَّلَاةِ مِن يَوْمِ الْجُمُعَةِ فَاسْعَوْا إِلَى ذِكْرِ اللَّهِ وَذَرُوا الْبَيْعَ</span><br><br>\"Apabila diseru untuk menunaikan shalat Jum'at, Maka bersegeralah kamu kepada mengingat Allah dan tinggalkanlah jual beli.\" (QS. Al-Jumu'ah: 9)<br><br><span class='text-sm text-stone-500 italic'>Kenapa dilarang? Soalnya hal itu bakal ganggu prioritas kewajiban sholat Jum'at kita! Gangguan ini muncul pas kita lagi asyik nge-deal harga. Jual belinya sih sah-sah aja, tapi kita dapet dosa karena mengabaikan panggilan Allah. Dan ingat, prinsip ini juga berlaku lho kalau kita malah asyik makan bareng atau sibuk nongkrong di waktu tersebut!</span>",
+                icon: "⏳"
+            }
+        ];
+
+        let currentSelectedIndex = -1;
+        let chartInstance = null;
+
+        function initChart() {
+            const ctx = document.getElementById('kaidahChart').getContext('2d');
+            
+            const labels = kaidahData.map(k => k.shortTitle);
+            const data = kaidahData.map(() => 1);
+            const bgColors = ['#064e3b', '#065f46', '#047857', '#059669', '#10b981'];
+            const hoverBgColors = ['#022c22', '#022c22', '#022c22', '#022c22', '#022c22'];
+
+            chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: bgColors,
+                        hoverBackgroundColor: hoverBgColors,
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: {
+                        legend: {
+                            display: false 
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return " Klik untuk membaca penjelasan";
+                                }
+                            }
+                        }
+                    },
+                    onClick: (event, elements) => {
+                        if (elements.length > 0) {
+                            const index = elements[0].index;
+                            updateContent(index);
+                        }
+                    },
+                    onHover: (event, elements) => {
+                        event.native.target.style.cursor = elements.length > 0 ? 'pointer' : 'default';
+                    }
+                }
+            });
+        }
+
+        function createButtons() {
+            const container = document.getElementById('button-container');
+            kaidahData.forEach((kaidah, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'px-3 py-2 text-sm font-semibold rounded-lg bg-stone-100 text-stone-700 hover:bg-green-100 hover:text-green-800 transition-colors border border-stone-200';
+                btn.innerHTML = `${kaidah.icon} Kaidah ${kaidah.id}`;
+                btn.onclick = () => updateContent(index);
+                btn.id = `btn-${index}`;
+                container.appendChild(btn);
+            });
+        }
+
+        function updateContent(index) {
+            if (currentSelectedIndex === index) return;
+            currentSelectedIndex = index;
+            const data = kaidahData[index];
+
+            const titleEl = document.getElementById('display-title');
+            const contentEl = document.getElementById('display-content');
+
+            contentEl.classList.remove('fade-in');
+            void contentEl.offsetWidth; 
+            contentEl.classList.add('fade-in');
+
+            titleEl.innerHTML = `${data.icon} ${data.title}`;
+
+            contentEl.innerHTML = `
+                <div class="mb-8 p-6 bg-stone-50 border-r-4 border-l-4 border-green-800 rounded-lg text-center shadow-inner">
+                    <p class="text-2xl font-bold text-green-900 leading-loose" dir="rtl">${data.arabic}</p>
+                    <p class="mt-4 text-stone-600 font-medium italic">"${data.translation}"</p>
+                </div>
+
+                <div class="mb-6">
+                    <h4 class="text-lg font-bold text-green-800 mb-2 flex items-center gap-2">
+                        <span>📖</span> Penjelasan
+                    </h4>
+                    <p class="text-stone-700 leading-relaxed">${data.penjelasan}</p>
+                </div>
+
+                <div class="bg-yellow-50 p-5 rounded-xl border border-yellow-200">
+                    <h4 class="text-lg font-bold text-yellow-800 mb-2 flex items-center gap-2">
+                        <span>💡</span> Contoh Kasus / Dalil
+                    </h4>
+                    <p class="text-stone-700 leading-relaxed">${data.contoh}</p>
+                </div>
+            `;
+
+            for (let i = 0; i < kaidahData.length; i++) {
+                const btn = document.getElementById(`btn-${i}`);
+                if (i === index) {
+                    btn.classList.replace('bg-stone-100', 'bg-green-800');
+                    btn.classList.replace('text-stone-700', 'text-white');
+                    btn.classList.replace('hover:bg-green-100', 'hover:bg-green-700');
+                    btn.classList.replace('hover:text-green-800', 'hover:text-white');
+                } else {
+                    btn.className = 'px-3 py-2 text-sm font-semibold rounded-lg bg-stone-100 text-stone-700 hover:bg-green-100 hover:text-green-800 transition-colors border border-stone-200';
+                }
+            }
+
+            if (chartInstance) {
+                const activeSegment = chartInstance.getActiveElements();
+                chartInstance.setActiveElements([{datasetIndex: 0, index: index}]);
+                chartInstance.update();
+            }
+        }
+
+        // --- QUIZ LOGIC ---
+        const quizData = [
+            {
+                q: "Apa hukum asal dari suatu larangan (Nahy) menurut kaidah pertama, kecuali ada dalil lain yang menunjukkannya?",
+                options: ["Mubah", "Sunnah", "Makruh", "Haram"],
+                correct: 3,
+                exp: "Kaidah pertama menyebutkan 'Asal dalam larangan itu hukumnya haram kecuali terdapat dalil yang menjelaskan tentang perbedaannya'."
+            },
+            {
+                q: "Berdasarkan kaidah kedua, jika syariat melarang kita memakan harta dengan batil, maka secara otomatis hal tersebut memerintahkan kita untuk...",
+                options: ["Menyimpan seluruh harta", "Mencari harta lewat jalan yang halal", "Membagikan harta secara merata", "Menghindari segala urusan dunia"],
+                correct: 1,
+                exp: "Melarang sesuatu berarti juga memerintah hal yang berlawanan dengan sesuatu itu (jalan yang batil lawannya jalan yang halal)."
+            },
+            {
+                q: "Apa dampaknya jika seseorang memaksakan diri melanggar larangan yang berkaitan erat dengan syarat/rukun suatu ibadah (Kaidah ke-3)?",
+                options: ["Ibadahnya tetap sah namun makruh", "Ibadahnya sah tapi pahalanya berkurang", "Ibadahnya otomatis batal/tidak sah", "Harus membayar denda (kafarat) dan ibadah sah"],
+                correct: 2,
+                exp: "Asal dalam larangan itu menunjukkan pada kerusakan (batalnya) perkara yang dilarang dalam urusan ibadah."
+            },
+            {
+                q: "Larangan jual beli kerikil membuat akadnya menjadi batal (Kaidah ke-4). Hal ini disebabkan karena larangan tersebut...",
+                options: ["Berada di luar inti (dzat) transaksi", "Merujuk langsung pada inti/dzat akad (mengandung ketidakjelasan/gharar)", "Terjadi di waktu sholat", "Hanya berlaku untuk barang yang tidak berharga"],
+                correct: 1,
+                exp: "Larangan menunjukkan kerusakan perkara dalam mu'amalah jika larangan itu merujuk langsung pada dzat akad (esensi transaksinya)."
+            },
+            {
+                q: "Mengapa transaksi jual beli yang dilakukan tepat saat adzan sholat Jum'at berkumandang tetap dinilai sah secara akad (meski pelakunya berdosa)?",
+                options: ["Karena larangannya tertuju pada hal di luar inti transaksi (waktu/timing)", "Karena hari Jum'at adalah hari yang penuh berkah", "Karena penjual dan pembeli sudah sepakat", "Karena tidak ada dalil yang melarangnya"],
+                correct: 0,
+                exp: "Jika larangan merujuk pada perkara yang keluar dari bentuk akad (faktor eksternal, seperti waktu sholat), maka akadnya tidak menjadi batal."
+            }
+        ];
+
+        let currentQuizIndex = 0;
+        let quizScore = 0;
+
+        function startQuiz() {
+            currentSelectedIndex = -1;
+            if (chartInstance) {
+                chartInstance.setActiveElements([]);
+                chartInstance.update();
+            }
+            
+            // Reset styling of all index buttons
+            for (let i = 0; i < kaidahData.length; i++) {
+                const btn = document.getElementById(`btn-${i}`);
+                if(btn) btn.className = 'px-3 py-2 text-sm font-semibold rounded-lg bg-stone-100 text-stone-700 hover:bg-green-100 hover:text-green-800 transition-colors border border-stone-200';
+            }
+
+            currentQuizIndex = 0;
+            quizScore = 0;
+            renderQuiz();
+        }
+
+        function renderQuiz() {
+            const titleEl = document.getElementById('display-title');
+            const contentEl = document.getElementById('display-content');
+
+            contentEl.classList.remove('fade-in');
+            void contentEl.offsetWidth;
+            contentEl.classList.add('fade-in');
+
+            titleEl.innerHTML = `📝 Kuis Evaluasi (Soal ${currentQuizIndex + 1} dari ${quizData.length})`;
+
+            const q = quizData[currentQuizIndex];
+            let optionsHtml = '';
+            q.options.forEach((opt, idx) => {
+                optionsHtml += `<button onclick="checkAnswer(${idx}, this)" class="quiz-opt-btn w-full text-left p-4 mb-3 rounded-xl border-2 border-stone-200 hover:bg-green-50 hover:border-green-400 transition-all font-medium text-stone-700 shadow-sm">${String.fromCharCode(65 + idx)}. ${opt}</button>`;
+            });
+
+            contentEl.innerHTML = `
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-6 text-sm font-bold text-stone-400">
+                        <span>Evaluasi Pemahaman</span>
+                        <span id="score-display" class="bg-stone-200 text-stone-600 px-3 py-1 rounded-full">Skor Sementara: ${quizScore}</span>
+                    </div>
+                    <h4 class="text-xl font-bold text-stone-800 mb-6 leading-relaxed">${q.q}</h4>
+                    <div class="flex flex-col gap-2">
+                        ${optionsHtml}
+                    </div>
+                </div>
+                <div id="quiz-feedback" class="hidden p-4 rounded-xl mt-4"></div>
+                <div class="mt-6 flex justify-end">
+                    <button id="next-quiz-btn" onclick="nextQuiz()" class="hidden bg-green-700 text-white px-8 py-3 rounded-xl hover:bg-green-800 font-bold shadow-md transition-all">Lanjut Soal Berikutnya &rarr;</button>
+                </div>
+            `;
+        }
+
+        function checkAnswer(selectedIdx, btnElement) {
+            const q = quizData[currentQuizIndex];
+            const feedbackEl = document.getElementById('quiz-feedback');
+            const nextBtn = document.getElementById('next-quiz-btn');
+            
+            // Disable all option buttons
+            const buttons = document.querySelectorAll('.quiz-opt-btn');
+            buttons.forEach(b => {
+                b.disabled = true;
+                b.classList.remove('hover:bg-green-50', 'hover:border-green-400');
+                b.classList.add('opacity-70', 'cursor-not-allowed');
+            });
+
+            feedbackEl.classList.remove('hidden');
+            nextBtn.classList.remove('hidden');
+
+            if (selectedIdx === q.correct) {
+                quizScore++;
+                feedbackEl.classList.add('bg-green-100', 'text-green-900', 'border', 'border-green-300');
+                feedbackEl.innerHTML = `<strong>✅ Tepat Sekali!</strong> <p class="mt-2 text-sm">${q.exp}</p>`;
+                btnElement.classList.replace('border-stone-200', 'border-green-500');
+                btnElement.classList.add('bg-green-100', 'text-green-900');
+                btnElement.classList.remove('opacity-70');
+            } else {
+                feedbackEl.classList.add('bg-red-50', 'text-red-900', 'border', 'border-red-300');
+                feedbackEl.innerHTML = `<strong>❌ Kurang Tepat.</strong> <p class="mt-2 text-sm">Jawaban yang benar adalah <strong>${String.fromCharCode(65 + q.correct)}. ${q.options[q.correct]}</strong>. <br><br><em>Alasan:</em> ${q.exp}</p>`;
+                btnElement.classList.replace('border-stone-200', 'border-red-500');
+                btnElement.classList.add('bg-red-100', 'text-red-900');
+                btnElement.classList.remove('opacity-70');
+                
+                // Highlight correct answer
+                buttons[q.correct].classList.replace('border-stone-200', 'border-green-500');
+                buttons[q.correct].classList.add('bg-green-100');
+                buttons[q.correct].classList.remove('opacity-70');
+            }
+            
+            // Update score display real-time
+            const scoreDisplay = document.getElementById('score-display');
+            if(scoreDisplay) scoreDisplay.innerHTML = `Skor Sementara: ${quizScore}`;
+        }
+
+        function nextQuiz() {
+            currentQuizIndex++;
+            if (currentQuizIndex < quizData.length) {
+                renderQuiz();
+            } else {
+                showQuizResult();
+            }
+        }
+
+        function showQuizResult() {
+            const titleEl = document.getElementById('display-title');
+            const contentEl = document.getElementById('display-content');
+
+            titleEl.innerHTML = `🏆 Hasil Kuis Evaluasi`;
+            
+            let message = "";
+            let icon = "";
+            if(quizScore === quizData.length) {
+                message = "Luar biasa! Pemahamanmu sangat sempurna.";
+                icon = "🌟";
+            } else if(quizScore >= 3) {
+                message = "Bagus sekali! Kamu sudah memahami sebagian besar materinya.";
+                icon = "👏";
+            } else {
+                message = "Tetap semangat! Yuk pelajari dan ulangi lagi materinya.";
+                icon = "💪";
+            }
+
+            contentEl.innerHTML = `
+                <div class="text-center py-10 fade-in flex flex-col items-center">
+                    <div class="text-6xl mb-6">${icon}</div>
+                    <h3 class="text-3xl font-bold text-stone-800 mb-2">Skor Kamu: <span class="text-green-700">${quizScore} / ${quizData.length}</span></h3>
+                    <p class="text-lg text-stone-600 mb-10 max-w-md">${message}</p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                        <button onclick="updateContent(0)" class="bg-stone-200 text-stone-800 px-8 py-3 rounded-xl hover:bg-stone-300 font-bold transition-all flex items-center justify-center gap-2">
+                            <span>📖</span> Kembali Belajar
+                        </button>
+                        <button onclick="startQuiz()" class="bg-green-700 text-white px-8 py-3 rounded-xl hover:bg-green-800 font-bold shadow-md transition-all flex items-center justify-center gap-2">
+                            <span>🔄</span> Ulangi Kuis
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.onload = () => {
+            initChart();
+            createButtons();
+        };
+    </script>
+</body>
+</html>
